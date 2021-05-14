@@ -1,9 +1,11 @@
 package com.somethingwithjava.service;
 
 import com.somethingwithjava.model.User;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Service
 public interface IUserService {
 
     void save(User user);
@@ -12,5 +14,5 @@ public interface IUserService {
 
     void delete(String userName);
 
-    Optional<User> getUserByUserID(String userId);
+    User getUserByUserID(String userId);
 }
