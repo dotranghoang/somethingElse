@@ -1,10 +1,8 @@
 package com.somethingwithjava.service;
 
 import com.somethingwithjava.model.User;
-import com.somethingwithjava.repository.IUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
+import java.util.Optional;
 
 public interface IUserService {
 
@@ -12,5 +10,7 @@ public interface IUserService {
 
     List<User> getAllUser();
 
-    void delete(String userId);
+    void delete(String userName);
+
+    Optional<User> getUserByUserID(String userId);
 }
