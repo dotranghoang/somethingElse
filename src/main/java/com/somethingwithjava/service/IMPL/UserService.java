@@ -6,6 +6,7 @@ import com.somethingwithjava.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -29,8 +30,13 @@ public class UserService implements IUserService  {
     }
 
     @Override
-    public User getUserByUserID(String userName) {
+    public User getUserByUserName(String userName) {
         return userRepository.findUserByUserName(userName);
+    }
+
+    @Override
+    public boolean comparePassword(String inputPassword, String targetPassword) {
+        return Arrays.equals(new String[]{inputPassword}, new String[]{targetPassword});
     }
 
 }

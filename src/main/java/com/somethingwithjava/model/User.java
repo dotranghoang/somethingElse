@@ -7,8 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+
 @Entity
 @Getter @Setter
 public class User {
@@ -29,9 +30,7 @@ public class User {
     @Column(length = 100)
     private String Name;
 
-    @Size(min = 8, max = 8, message = "Birthday invalid")
-    @Column(length = 8)
-    private String birthday;
+    private LocalDate birthday;
 
     @Size(min = 6, max = 255, message = "Mail invalid")
     @Email(message = "email invalid")
