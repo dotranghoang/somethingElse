@@ -4,11 +4,13 @@ package com.somethingwithjava.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.somethingwithjava.common.JwtProvider;
 import com.somethingwithjava.model.ResponseWithoutResult;
+import com.somethingwithjava.model.User;
+import com.somethingwithjava.repository.IUserRepository;
+import com.somethingwithjava.service.IMPL.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -20,14 +22,14 @@ import java.io.IOException;
 @Component
 public class HttpInterceptors extends HandlerInterceptorAdapter {
     @Autowired
-    JwtProvider jwtProvider;
+    IUserRepository userRepository;
 
     @Override
     //    before request execute by controller
     public boolean preHandle(
             HttpServletRequest request,
             HttpServletResponse response,
-            Object handler) throws IOException {
+            Object handler) throws Exception {
         final String authorizationHeaderValue = request.getHeader("Authorization");
         switch (request.getServletPath()) {
             case "/auth/signup/":
@@ -53,10 +55,12 @@ public class HttpInterceptors extends HandlerInterceptorAdapter {
 
     private boolean checkTokenInPreRequest(String authorizationHeaderValue, HttpServletResponse response) throws IOException {
         if (authorizationHeaderValue != null && authorizationHeaderValue.startsWith("Bearer")) {
-            String token = authorizationHeaderValue.substring(7, authorizationHeaderValue.length());
-            boolean rsCheck = jwtProvider.validateToken(token);
-            if (rsCheck)
-                return true;
+            String token = authorizationHeaderValue.substring(7);
+            boolean rsCheck = JwtProvider.validateToken(token);
+            if (rsCheck) {
+               String userName = JwtProvider.getUserIdFromJwt(token);
+
+            }
         }
         ObjectMapper mapper = new ObjectMapper();
         ResponseWithoutResult responseWithoutResult =

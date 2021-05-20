@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class UserService implements IUserService  {
     @Autowired
-    private IUserRepository userRepository;
+    private static IUserRepository userRepository;
 
     @Override
     public void save(User user) {
@@ -37,5 +37,10 @@ public class UserService implements IUserService  {
     @Override
     public boolean comparePassword(String inputPassword, String targetPassword) {
         return Arrays.equals(new String[]{inputPassword}, new String[]{targetPassword});
+    }
+
+    public static synchronized boolean existsByUserName(String userName) {
+        boolean isExist = userRepository.existsByUserName(userName);
+        return isExist;
     }
 }

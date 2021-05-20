@@ -14,7 +14,7 @@ public interface IUserService {
 
     void delete(String userName);
 
-    User getUserByUserName(String userId);
+    User getUserByUserName(String userName);
 
     boolean comparePassword(String inputPassword, String targetPassword);
 }
