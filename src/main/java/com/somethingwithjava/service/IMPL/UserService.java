@@ -6,10 +6,11 @@ import com.somethingwithjava.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class UserService implements IUserService {
+public class UserService implements IUserService  {
     @Autowired
     private IUserRepository userRepository;
 
@@ -24,7 +25,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void delete(String userId) {
-        userRepository.deleteByUserId(userId);
+    public void delete(String userName) {
+        userRepository.deleteByUserName(userName);
+    }
+
+    @Override
+    public User getUserByUserName(String userName) {
+        return userRepository.findUserByUserName(userName);
+    }
+
+    @Override
+    public boolean comparePassword(String inputPassword, String targetPassword) {
+        return Arrays.equals(new String[]{inputPassword}, new String[]{targetPassword});
     }
 }

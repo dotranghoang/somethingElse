@@ -6,32 +6,29 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Component
 @Slf4j
-public class JwtProvider {
-    @Value("${bezkoder.app.jwtSecret}")
-    private String jwtSecret;
+public final class JwtProvider {
+    private static String jwtSecret = "SomethingElse";
+    private static int jwtExpirationMs = 86400000;
 
-    @Value("${bezkoder.app.jwtExpirationMs}")
-    private Long jwtExpirationMs;
-
-    public String generateToken(User user) {
+    public static String generateToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
         return Jwts.builder()
-                .setSubject(user.getUserId())
+                .setSubject(user.getUserName())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
-    public String getUserIdFromJwt(String token) {
+    public static String getUserIdFromJwt(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
@@ -39,7 +36,9 @@ public class JwtProvider {
         return claims.getSubject();
     }
 
-    public boolean validateToken(String token) {
+    public static synchronized boolean validateToken(String token) {
+        if (!StringUtils.hasText(token))
+            return false;
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
