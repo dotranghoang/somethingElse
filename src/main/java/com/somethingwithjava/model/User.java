@@ -1,5 +1,6 @@
 package com.somethingwithjava.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,7 @@ public class User {
 
     @Size(min = 6, max = 225)
     @Column(length = 225)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String userPassword;
 
     @Size(min = 10, max = 10, message = "Phone number invalid")

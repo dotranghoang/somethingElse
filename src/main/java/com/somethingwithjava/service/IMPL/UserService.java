@@ -38,5 +38,4 @@ public class UserService implements IUserService  {
     public boolean comparePassword(String inputPassword, String targetPassword) {
         return Arrays.equals(new String[]{inputPassword}, new String[]{targetPassword});
     }
-
 }

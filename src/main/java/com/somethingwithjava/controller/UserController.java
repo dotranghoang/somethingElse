@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     private IUserService userService;
@@ -20,16 +21,9 @@ public class UserController {
     private JwtProvider jwtProvider;
 
 
-    @PostMapping("/user")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        String jwt = jwtProvider.generateToken(user);
-        userService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/user")
+    @GetMapping("")
     public ResponseEntity<?> getAllUser() {
-        List<User> users = (List<User>) userService.getAllUser();
+        List<User> users = userService.getAllUser();
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
