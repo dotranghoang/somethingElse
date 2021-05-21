@@ -57,10 +57,8 @@ public class HttpInterceptors extends HandlerInterceptorAdapter {
         if (authorizationHeaderValue != null && authorizationHeaderValue.startsWith("Bearer")) {
             String token = authorizationHeaderValue.substring(7);
             boolean rsCheck = JwtProvider.validateToken(token);
-            if (rsCheck) {
-               String userName = JwtProvider.getUserIdFromJwt(token);
-
-            }
+            if (rsCheck)
+            return true;
         }
         ObjectMapper mapper = new ObjectMapper();
         ResponseWithoutResult responseWithoutResult =
