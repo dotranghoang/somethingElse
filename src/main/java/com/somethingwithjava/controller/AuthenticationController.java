@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
     @Autowired
     private UserService userService;
@@ -30,7 +30,7 @@ public class AuthenticationController {
     @Autowired
     private DateUtil dateUtil;
 
-    @PostMapping("signup")
+    @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody User user) throws Exception {
         User userExist = userService.getUserByUserName(user.getUserName());
         if (userExist != null) {
