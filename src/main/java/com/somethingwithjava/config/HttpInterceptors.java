@@ -3,6 +3,7 @@ package com.somethingwithjava.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.somethingwithjava.common.JwtProvider;
+import com.somethingwithjava.common.RedisUtil;
 import com.somethingwithjava.model.ResponseWithoutResult;
 import com.somethingwithjava.model.User;
 import com.somethingwithjava.repository.IUserRepository;
@@ -57,8 +58,12 @@ public class HttpInterceptors extends HandlerInterceptorAdapter {
         if (authorizationHeaderValue != null && authorizationHeaderValue.startsWith("Bearer")) {
             String token = authorizationHeaderValue.substring(7);
             boolean rsCheck = JwtProvider.validateToken(token);
-            if (rsCheck)
-            return true;
+            if (rsCheck) {
+                String userName = JwtProvider.getUserIdFromJwt(token);
+                boolean isExistUser = RedisUtil.isExistValue(userName);
+                if (isExistUser)
+                    return true;
+            }
         }
         ObjectMapper mapper = new ObjectMapper();
         ResponseWithoutResult responseWithoutResult =
