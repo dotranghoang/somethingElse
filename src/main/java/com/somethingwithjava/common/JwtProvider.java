@@ -2,7 +2,10 @@ package com.somethingwithjava.common;
 
 
 import com.somethingwithjava.model.User;
+import com.somethingwithjava.repository.IUserRepository;
+import com.somethingwithjava.service.IMPL.UserService;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,7 +31,7 @@ public final class JwtProvider {
                 .compact();
     }
 
-    public static String getUserIdFromJwt(String token) {
+    public static synchronized String getUserIdFromJwt(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)

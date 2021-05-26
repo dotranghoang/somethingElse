@@ -1,8 +1,6 @@
 package com.somethingwithjava.controller;
 
-import com.somethingwithjava.common.DateUtil;
-import com.somethingwithjava.common.EnDecoder;
-import com.somethingwithjava.common.JwtProvider;
+import com.somethingwithjava.common.*;
 import com.somethingwithjava.model.LoginRequestForm;
 import com.somethingwithjava.model.LoginResponseForm;
 import com.somethingwithjava.model.ResponseWithoutResult;
@@ -18,7 +16,7 @@ import javax.validation.Valid;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
     @Autowired
     private UserService userService;
@@ -29,7 +27,10 @@ public class AuthenticationController {
     @Autowired
     private DateUtil dateUtil;
 
-    @PostMapping("signup")
+    @Autowired
+    private UtilFunction utilFunction;
+
+    @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody User user) throws Exception {
         User userExist = userService.getUserByUserName(user.getUserName());
         if (userExist != null) {
@@ -43,6 +44,9 @@ public class AuthenticationController {
                     new ResponseWithoutResult(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), "Error when encrypt password!");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        int pinCode = utilFunction.getRandomNumber();
+        RedisUtil.saveString("mail" + user.getUserName(), String.valueOf(pinCode));
+        MailSender.sendMail(user.getEmail(), pinCode, user.getUserName());
         user.setUserPassword(encryptPassword);
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
@@ -63,6 +67,13 @@ public class AuthenticationController {
             responseForm.setResponseTime(dateUtil.getCurrentDateTime());
             responseForm.setToken(token);
             responseForm.setUserName(user.getUserName());
+            String statusRedisSet = RedisUtil.saveString(responseForm.getUserName(), responseForm.getUserName());
+            if (!statusRedisSet.equals("OK")){
+                ResponseWithoutResult responseWithoutResult = new ResponseWithoutResult(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                        "Error at Redis");
+                return new ResponseEntity<>(responseWithoutResult, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             return new ResponseEntity<>(responseForm, HttpStatus.OK);
         }
         ResponseWithoutResult response =
