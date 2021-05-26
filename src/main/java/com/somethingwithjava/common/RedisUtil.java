@@ -1,10 +1,12 @@
 package com.somethingwithjava.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 
 @Slf4j
+@Component
 public class RedisUtil {
     private static Jedis jedis = new Jedis();
 

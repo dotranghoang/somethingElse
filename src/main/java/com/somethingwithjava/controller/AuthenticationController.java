@@ -1,9 +1,6 @@
 package com.somethingwithjava.controller;
 
-import com.somethingwithjava.common.DateUtil;
-import com.somethingwithjava.common.EnDecoder;
-import com.somethingwithjava.common.JwtProvider;
-import com.somethingwithjava.common.RedisUtil;
+import com.somethingwithjava.common.*;
 import com.somethingwithjava.model.LoginRequestForm;
 import com.somethingwithjava.model.LoginResponseForm;
 import com.somethingwithjava.model.ResponseWithoutResult;
@@ -30,6 +27,9 @@ public class AuthenticationController {
     @Autowired
     private DateUtil dateUtil;
 
+    @Autowired
+    private UtilFunction utilFunction;
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody User user) throws Exception {
         User userExist = userService.getUserByUserName(user.getUserName());
@@ -44,6 +44,9 @@ public class AuthenticationController {
                     new ResponseWithoutResult(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), "Error when encrypt password!");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        int pinCode = utilFunction.getRandomNumber();
+        RedisUtil.saveString("mail" + user.getUserName(), String.valueOf(pinCode));
+        MailSender.sendMail(user.getEmail(), pinCode, user.getUserName());
         user.setUserPassword(encryptPassword);
         userService.save(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
