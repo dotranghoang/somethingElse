@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 @Getter @Setter
@@ -32,7 +32,7 @@ public class User {
     @Column(length = 100)
     private String Name;
 
-    private LocalDate birthday;
+    private Date birthday;
 
     @Size(min = 6, max = 255, message = "Mail invalid")
     @Email(message = "email invalid")

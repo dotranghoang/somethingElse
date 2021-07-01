@@ -14,7 +14,7 @@ import java.util.Properties;
 @Component
 public class MailSender {
     private static final String USERNAME = "dotranghoang@gmail.com";
-    private static final String PASSWORD = "acaktyvuvdwrkojt";
+    private static final String PASSWORD = "sxmqoncoeegzjfpq";
 
     public static void sendMail(String receiver, Number pinCode, String accountRegister) throws Exception {
         Properties props = new Properties();
